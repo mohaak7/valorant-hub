@@ -1,0 +1,164 @@
+const API_BASE = "https://valorant-api.com/v1";
+
+type ApiResponse<T> = { status: number; data: T };
+
+export type AgentRole = {
+  uuid: string;
+  displayName: string;
+  description: string;
+  displayIcon: string;
+};
+
+export type AgentAbility = {
+  slot: string;
+  displayName: string;
+  description: string;
+  displayIcon: string;
+};
+
+export type Agent = {
+  uuid: string;
+  displayName: string;
+  description: string;
+  displayIcon: string;
+  fullPortrait: string;
+  background: string;
+  backgroundGradientColors: string[];
+  role: AgentRole;
+  abilities: AgentAbility[];
+};
+
+export type ContentTier = {
+  uuid: string;
+  displayName: string;
+  devName: string;
+  rank: number;
+  displayIcon: string;
+};
+
+export type WeaponSkinChroma = {
+  uuid: string;
+  displayIcon: string | null;
+  fullRender: string;
+  swatch?: string | null;
+};
+
+export type WeaponSkin = {
+  uuid: string;
+  displayName: string;
+  themeUuid: string;
+  contentTierUuid: string;
+  displayIcon: string | null;
+  wallpaper: string | null;
+  chromas: WeaponSkinChroma[];
+  levels: { uuid: string; displayIcon: string | null }[];
+};
+
+export type Weapon = {
+  uuid: string;
+  displayName: string;
+  category: string;
+  displayIcon: string;
+  skins: WeaponSkin[];
+};
+
+export type SkinWithWeapon = WeaponSkin & { weaponName: string; weaponUuid: string };
+
+export type Bundle = {
+  uuid: string;
+  displayName: string;
+  displayNameSubText: string | null;
+  description: string;
+  displayIcon: string;
+  displayIcon2: string;
+  verticalPromoImage: string | null;
+};
+
+export type Theme = {
+  uuid: string;
+  displayName: string;
+  displayIcon: string | null;
+};
+
+async function fetchApi<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    next: { revalidate: 86400 },
+  });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  const json: ApiResponse<T> = await res.json();
+  return json.data;
+}
+
+export async function fetchAgents(): Promise<Agent[]> {
+  const data = await fetchApi<Agent[]>("/agents?isPlayableCharacter=true");
+  return (data as (Agent & { isPlayableCharacter?: boolean })[]).filter(
+    (a) => a.isPlayableCharacter !== false
+  );
+}
+
+export async function fetchWeapons(): Promise<Weapon[]> {
+  return fetchApi<Weapon[]>("/weapons");
+}
+
+export async function fetchBundles(): Promise<Bundle[]> {
+  return fetchApi<Bundle[]>("/bundles");
+}
+
+export async function fetchContentTiers(): Promise<ContentTier[]> {
+  return fetchApi<ContentTier[]>("/contenttiers");
+}
+
+export async function fetchThemes(): Promise<Theme[]> {
+  return fetchApi<Theme[]>("/themes");
+}
+
+/** All skins flattened with weapon name for filtering */
+export async function fetchAllSkins(): Promise<SkinWithWeapon[]> {
+  const weapons = await fetchWeapons();
+  const skins: SkinWithWeapon[] = [];
+  for (const w of weapons) {
+    for (const s of w.skins) {
+      if (!s.displayName?.match(/Level \d+/)) {
+        skins.push({
+          ...s,
+          weaponName: w.displayName,
+          weaponUuid: w.uuid,
+        });
+      }
+    }
+  }
+  return skins;
+}
+
+/** Agents for static generation */
+export async function getAllAgents(): Promise<Agent[]> {
+  return fetchAgents();
+}
+
+/** Bundles grouped by displayName (theme) - unique by name */
+export function groupBundlesByName(bundles: Bundle[]): Map<string, Bundle[]> {
+  const map = new Map<string, Bundle[]>();
+  for (const b of bundles) {
+    const name = b.displayName;
+    if (!map.has(name)) map.set(name, []);
+    map.get(name)!.push(b);
+  }
+  return map;
+}
+
+/** Get skin IDs that belong to a bundle by matching theme displayName to bundle displayName */
+export function getSkinsInBundle(
+  bundleDisplayName: string,
+  themes: Theme[],
+  allSkins: SkinWithWeapon[]
+): SkinWithWeapon[] {
+  const themeUuids = new Set(
+    themes
+      .filter(
+        (t) =>
+          t.displayName?.toLowerCase() === bundleDisplayName.toLowerCase()
+      )
+      .map((t) => t.uuid)
+  );
+  return allSkins.filter((s) => themeUuids.has(s.themeUuid));
+}

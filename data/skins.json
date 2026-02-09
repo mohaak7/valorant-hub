@@ -1,0 +1,123 @@
+[
+  {
+    "slug": "reaver-vandal",
+    "name": "Reaver Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/reaver-vandal.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-10-01", "vp": 1775 },
+      { "date": "2024-11-01", "vp": 1600 },
+      { "date": "2025-01-01", "vp": 1750 }
+    ]
+  },
+  {
+    "slug": "prime-vandal",
+    "name": "Prime Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/prime-vandal.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-10-01", "vp": 1775 },
+      { "date": "2024-12-01", "vp": 1600 },
+      { "date": "2025-01-01", "vp": 1700 }
+    ]
+  },
+  {
+    "slug": "elderflame-vandal",
+    "name": "Elderflame Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/elderflame-vandal.png",
+    "estimatedVpPrice": 2475,
+    "priceHistory": [
+      { "date": "2024-09-01", "vp": 2475 },
+      { "date": "2024-11-01", "vp": 2300 },
+      { "date": "2025-01-01", "vp": 2400 }
+    ]
+  },
+  {
+    "slug": "reaver-phantom",
+    "name": "Reaver Phantom",
+    "weapon": "Phantom",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/reaver-phantom.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-09-01", "vp": 1775 },
+      { "date": "2024-12-01", "vp": 1650 },
+      { "date": "2025-01-01", "vp": 1750 }
+    ]
+  },
+  {
+    "slug": "prime-phantom",
+    "name": "Prime Phantom",
+    "weapon": "Phantom",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/prime-phantom.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-09-01", "vp": 1775 },
+      { "date": "2024-11-15", "vp": 1650 },
+      { "date": "2025-01-01", "vp": 1700 }
+    ]
+  },
+  {
+    "slug": "rgx-vandal",
+    "name": "RGX 11z Pro Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/rgx-vandal.png",
+    "estimatedVpPrice": 2175,
+    "priceHistory": [
+      { "date": "2024-08-01", "vp": 2175 },
+      { "date": "2024-10-01", "vp": 2100 },
+      { "date": "2025-01-01", "vp": 2150 }
+    ]
+  },
+  {
+    "slug": "ion-phantom",
+    "name": "Ion Phantom",
+    "weapon": "Phantom",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/ion-phantom.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-07-01", "vp": 1775 },
+      { "date": "2024-10-01", "vp": 1650 },
+      { "date": "2025-01-01", "vp": 1700 }
+    ]
+  },
+  {
+    "slug": "spectrum-phantom",
+    "name": "Spectrum Phantom",
+    "weapon": "Phantom",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/spectrum-phantom.png",
+    "estimatedVpPrice": 2675,
+    "priceHistory": [
+      { "date": "2024-07-01", "vp": 2675 },
+      { "date": "2024-10-01", "vp": 2500 },
+      { "date": "2025-01-01", "vp": 2600 }
+    ]
+  },
+  {
+    "slug": "oni-vandal",
+    "name": "Oni Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/oni-vandal.png",
+    "estimatedVpPrice": 1775,
+    "priceHistory": [
+      { "date": "2024-06-01", "vp": 1775 },
+      { "date": "2024-09-01", "vp": 1600 },
+      { "date": "2025-01-01", "vp": 1700 }
+    ]
+  },
+  {
+    "slug": "araxys-vandal",
+    "name": "Araxs Vandal",
+    "weapon": "Vandal",
+    "imageUrl": "https://images.valorant-api.com/weaponskinlevels/araxys-vandal.png",
+    "estimatedVpPrice": 2175,
+    "priceHistory": [
+      { "date": "2024-05-01", "vp": 2175 },
+      { "date": "2024-09-01", "vp": 2050 },
+      { "date": "2025-01-01", "vp": 2100 }
+    ]
+  }
+]
+

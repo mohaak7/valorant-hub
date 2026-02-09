@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-oswald), "Oswald", system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --color-valo-dark: #0f1923;
+  --color-valo-red: #ff4655;
+  --color-valo-white: #ece8e1;
+}
+
+:root {
+  --valo-dark: #0f1923;
+  --valo-red: #ff4655;
+  --valo-white: #ece8e1;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--valo-dark);
+  color: var(--valo-white);
+  font-family: "Oswald", var(--font-sans), system-ui, sans-serif;
+}
+
+/* Tactical grid background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(236, 232, 225, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 232, 225, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--valo-red);
+  color: var(--valo-white);
+}
+
+/* Glitch effect utility - use .glitch-hover on parent */
+.glitch-hover:hover .glitch-text {
+  animation: glitch 0.3s ease-in-out;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+  100% { transform: translate(0); }
+}
+
+/* Tactical angular clip - 45deg cut on one corner */
+.clip-tactical {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+}
+
+.clip-tactical-inverse {
+  clip-path: polygon(12px 0, 100% 0, 100% 100%, 0 100%, 0 12px);
+}
