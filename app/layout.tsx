@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   },
   description: siteConfig.siteDescription,
   keywords: seoKeywordsBase,
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 const NAV_LINKS = [
@@ -20,6 +24,7 @@ const NAV_LINKS = [
   { href: "/bundles", label: "Bundles" },
   { href: "/crosshairs", label: "Crosshairs" },
   { href: "/tools/agent-roulette", label: "Agent Roulette" },
+  { href: "/tools/skin-roulette", label: "Skin Roulette" },
 ];
 
 export default function RootLayout({
