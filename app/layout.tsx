@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { siteConfig, seoKeywordsBase } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
@@ -14,6 +15,9 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
+  },
+  verification: {
+    google: "YjzaoQVBhHmL6tv9kMHUjwSwLotKb5n4v9L6nV9q1nQ",
   },
 };
 
@@ -33,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-[#0f1923] text-[#ece8e1] antialiased">
+        <GoogleAnalytics gaId="GTM-5DH6LNTN" />
         <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
           <header className="mb-6 flex items-center justify-between gap-4 border-b border-[#ece8e1]/20 pb-4">
             <Link
