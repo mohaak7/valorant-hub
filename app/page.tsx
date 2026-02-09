@@ -5,7 +5,7 @@ import { TacticalCard } from "@/components/TacticalCard";
 import { seoKeywordsBase } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
-  title: "Find cheap Valorant skin prices & VP cost",
+  title: "Find all Valorant skin prices",
   description:
     "Search any Valorant skin price instantly. View VP cost estimates and track cheap Valorant skins. Agents, bundles, guides, crosshairs.",
   keywords: [

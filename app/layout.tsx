@@ -6,8 +6,8 @@ import { siteConfig, seoKeywordsBase } from "@/lib/siteConfig";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
   title: {
-    default: `${siteConfig.siteName} | Cheap VP Cost Database`,
-    template: `%s | ${siteConfig.siteName}`,
+    default: "Valorant Hub | Skins & Tools",
+    template: "%s | Valorant Hub",
   },
   description: siteConfig.siteDescription,
   keywords: seoKeywordsBase,
