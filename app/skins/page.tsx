@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Browse Valorant weapon skins. Filter by weapon type (Vandal, Phantom, Knife) and tier (Select, Deluxe, Premium).",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 type PageProps = {
   searchParams: Promise<{ weapon?: string; tier?: string; q?: string }>;

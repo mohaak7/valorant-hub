@@ -25,7 +25,8 @@ export async function generateMetadata({
   };
 }
 
-export const revalidate = 86400;
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 export default async function AgentPage({ params }: PageProps) {
   const { uuid } = await params;

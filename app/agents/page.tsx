@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "All Valorant agents: portraits, roles, and abilities. Initiator, Duelist, Sentinel, Controller.",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export default async function AgentsPage() {
   const agents = await fetchAgents();

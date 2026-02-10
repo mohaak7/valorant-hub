@@ -82,7 +82,7 @@ export type Theme = {
 
 async function fetchApi<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    next: { revalidate: 86400 },
+    next: { revalidate: 3600 },
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   const json: ApiResponse<T> = await res.json();

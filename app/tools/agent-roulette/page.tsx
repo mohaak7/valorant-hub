@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Spin the Agent Roulette to pick a random Valorant agent. Slot-machine animation, tactical UI.",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export default async function AgentRoulettePage() {
   const agents = await fetchAgents();

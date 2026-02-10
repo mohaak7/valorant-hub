@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   ],
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export default async function Home() {
   const weapons = await fetchWeapons();

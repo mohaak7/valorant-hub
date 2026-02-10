@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     "Browse Valorant skin bundles. Bundle cover images and themes from the official store.",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export default async function BundlesPage() {
   const bundles = await fetchBundles();

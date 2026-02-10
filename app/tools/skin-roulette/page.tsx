@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     "Select a weapon, then spin for a random skin. Select / Deluxe / Premium / Ultra / Exclusive tiers only.",
 };
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export default async function SkinRoulettePage() {
   const weapons = await fetchWeaponsForRoulette();
