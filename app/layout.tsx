@@ -12,10 +12,6 @@ export const metadata: Metadata = {
   },
   description: siteConfig.siteDescription,
   keywords: seoKeywordsBase,
-  icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
-  },
   verification: {
     google: "YjzaoQVBhHmL6tv9kMHUjwSwLotKb5n4v9L6nV9q1nQ",
   },
