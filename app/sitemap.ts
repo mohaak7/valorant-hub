@@ -1,9 +1,8 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/lib/siteConfig";
 import { fetchAllSkins, fetchAgents } from "@/lib/valorant-api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = siteConfig.baseUrl.replace(/\/$/, "");
+  const baseUrl = 'https://www.valoskinsdb.com';
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: `${baseUrl}/`, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
