@@ -16,27 +16,51 @@ type AgentRouletteClientProps = {
   agents: Agent[];
 };
 
+const ROLE_OPTIONS = ["All", "Duelist", "Initiator", "Sentinel", "Controller"] as const;
+type RoleFilter = (typeof ROLE_OPTIONS)[number];
+
 function pickRandomIndex(max: number) {
   return Math.floor(Math.random() * max);
 }
 
+/** Strict filter: only agents whose role.displayName exactly matches the selected role. */
+function filterAgentsByRole(agents: Agent[], role: RoleFilter): Agent[] {
+  if (role === "All") return agents;
+  return agents.filter((a) => a.role?.displayName === role);
+}
+
 export function AgentRouletteClient({ agents }: AgentRouletteClientProps) {
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(() =>
-    agents.length ? pickRandomIndex(agents.length) : 0
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("All");
+  const filteredAgents = useMemo(
+    () => filterAgentsByRole(agents, roleFilter),
+    [agents, roleFilter]
   );
+
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [winnerIndex, setWinnerIndex] = useState<number | null>(null);
 
   const timerRef = useRef<number | null>(null);
   const stopRef = useRef<number | null>(null);
 
-  const winner = winnerIndex != null ? agents[winnerIndex] : null;
+  // When role filter or filtered list changes, clamp index and clear winner
+  useEffect(() => {
+    const n = filteredAgents.length;
+    if (n === 0) return;
+    setActiveIndex((prev) => (prev < n ? prev : pickRandomIndex(n)));
+    setWinnerIndex(null);
+  }, [roleFilter, filteredAgents.length]);
+
+  const winner = winnerIndex != null && winnerIndex < filteredAgents.length
+    ? filteredAgents[winnerIndex]
+    : null;
+  const activeAgent = filteredAgents[activeIndex];
 
   const bg = useMemo(() => {
-    const agent = winner ?? agents[activeIndex];
+    const agent = winner ?? activeAgent;
     const c = agent?.backgroundGradientColors?.[0]?.slice(0, 6) ?? "0f1923";
     return `linear-gradient(180deg, #${c}55 0%, #0f1923 55%)`;
-  }, [agents, activeIndex, winner]);
+  }, [filteredAgents, activeIndex, winner]);
 
   useEffect(() => {
     return () => {
@@ -46,24 +70,23 @@ export function AgentRouletteClient({ agents }: AgentRouletteClientProps) {
   }, []);
 
   function spin() {
-    if (agents.length < 2) return;
+    if (filteredAgents.length < 2) return;
     if (isSpinning) return;
 
     setIsSpinning(true);
     setWinnerIndex(null);
 
-    // Rapid cycling like a slot machine.
+    const n = filteredAgents.length;
     let i = activeIndex;
     timerRef.current = window.setInterval(() => {
-      i = (i + 1 + Math.floor(Math.random() * 3)) % agents.length;
+      i = (i + 1 + Math.floor(Math.random() * 3)) % n;
       setActiveIndex(i);
     }, 70);
 
-    // Stop after ~2.6s and pick a winner.
     stopRef.current = window.setTimeout(() => {
       if (timerRef.current) window.clearInterval(timerRef.current);
       timerRef.current = null;
-      const win = pickRandomIndex(agents.length);
+      const win = pickRandomIndex(n);
       setActiveIndex(win);
       setWinnerIndex(win);
       setIsSpinning(false);
@@ -83,7 +106,8 @@ export function AgentRouletteClient({ agents }: AgentRouletteClientProps) {
     );
   }
 
-  const active = agents[activeIndex];
+  const active = activeAgent;
+  const hasFilteredAgents = filteredAgents.length > 0;
 
   return (
     <section className="space-y-8">
@@ -99,13 +123,44 @@ export function AgentRouletteClient({ agents }: AgentRouletteClientProps) {
         <button
           type="button"
           onClick={spin}
-          disabled={isSpinning}
+          disabled={isSpinning || !hasFilteredAgents}
           className="glitch-hover clip-tactical border-2 border-[#ff4655] bg-[#ff4655] px-6 py-3 text-xs font-bold uppercase tracking-[0.25em] text-[#0f1923] transition hover:bg-[#ece8e1] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span className="glitch-text">{isSpinning ? "Spinning..." : "Pick agent"}</span>
         </button>
       </div>
 
+      {/* Role filter bar */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#ece8e1]/70">
+          Role:
+        </span>
+        {ROLE_OPTIONS.map((role) => {
+          const isActive = roleFilter === role;
+          return (
+            <button
+              key={role}
+              type="button"
+              onClick={() => setRoleFilter(role)}
+              className={`clip-tactical px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] transition ${
+                isActive
+                  ? "border-2 border-[#ff4655] bg-[#ff4655] text-white"
+                  : "border-2 border-[#ff4655] bg-transparent text-white hover:bg-[#ff4655]/20"
+              }`}
+            >
+              {role}
+            </button>
+          );
+        })}
+      </div>
+
+      {!hasFilteredAgents ? (
+        <div className="clip-tactical border-2 border-[#ece8e1]/20 bg-[#0f1923]/80 p-6 text-center">
+          <p className="text-sm uppercase tracking-widest text-[#ece8e1]/70">
+            No agents in this role. Try another filter.
+          </p>
+        </div>
+      ) : (
       <TacticalCard
         glitch={!winner}
         className="overflow-hidden border-2 border-[#ece8e1]/20"
@@ -187,6 +242,7 @@ export function AgentRouletteClient({ agents }: AgentRouletteClientProps) {
           </div>
         </div>
       </TacticalCard>
+      )}
     </section>
   );
 }
