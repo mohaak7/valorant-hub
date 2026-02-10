@@ -1,19 +1,6 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { fetchWeapons } from "@/lib/valorant-api";
 import { TacticalCard } from "@/components/TacticalCard";
-import { seoKeywordsBase } from "@/lib/siteConfig";
-
-export const metadata: Metadata = {
-  title: "Find all Valorant skin prices",
-  description:
-    "Search any Valorant skin price instantly. View VP cost estimates and track cheap Valorant skins. Agents, bundles, guides, crosshairs.",
-  keywords: [
-    ...seoKeywordsBase,
-    "find any Valorant skin price",
-    "Valorant skin price tracker",
-  ],
-};
 
 export const revalidate = 3600;
 
