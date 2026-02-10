@@ -2,16 +2,23 @@ import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Link from "next/link";
-import { siteConfig, seoKeywordsBase } from "@/lib/siteConfig";
+import { siteConfig } from "@/lib/siteConfig";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.baseUrl),
   title: {
-    default: "Valorant Hub | Skins & Tools",
-    template: "%s | Valorant Hub",
+    default: "ValoSkinsDB | Valorant Skin Roulette, Agent Picker & Pro Crosshairs",
+    template: "%s | ValoSkinsDB",
   },
-  description: siteConfig.siteDescription,
-  keywords: seoKeywordsBase,
+  description:
+    "The cleanest ad-free Valorant toolkit. Randomize your next skin or agent, browse the full skin database, and copy pro player crosshairs instantly. Updated daily.",
+  keywords: [
+    "Valorant Skins",
+    "Skin Roulette",
+    "Agent Randomizer",
+    "Valorant Crosshairs",
+    "Pro Settings",
+  ],
   verification: {
     google: "YjzaoQVBhHmL6tv9kMHUjwSwLotKb5n4v9L6nV9q1nQ",
   },
