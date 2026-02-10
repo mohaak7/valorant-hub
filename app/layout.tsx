@@ -19,6 +19,20 @@ export const metadata: Metadata = {
     "Valorant Crosshairs",
     "Pro Settings",
   ],
+  openGraph: {
+    title: "ValoSkinsDB | Skin Roulette, Agent Picker & Pro Crosshairs",
+    description:
+      "The cleanest ad-free Valorant toolkit. Randomize your next skin, check prices, and copy pro crosshairs.",
+    url: "https://www.valoskinsdb.com",
+    siteName: "ValoSkinsDB",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ValoSkinsDB | Valorant Tools",
+    description: "The cleanest ad-free Valorant toolkit.",
+  },
   verification: {
     google: "YjzaoQVBhHmL6tv9kMHUjwSwLotKb5n4v9L6nV9q1nQ",
   },
