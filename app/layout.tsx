@@ -69,7 +69,7 @@ export default function RootLayout({
                   Valorant Skins DB
                 </span>
                 <span className="text-[10px] font-medium uppercase tracking-widest text-[#ece8e1]/70">
-                  Price &amp; VP Tracker
+                  Skins • Agents • Crosshairs
                 </span>
               </div>
             </Link>
