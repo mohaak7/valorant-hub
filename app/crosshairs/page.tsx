@@ -5,6 +5,7 @@ import { CrosshairPreview } from "@/components/CrosshairPreview";
 import { CrosshairCopyButton } from "./CrosshairCopyButton";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
+import { useLanguage } from "@/lib/lang-context";
 
 const PRO_CROSSHAIRS = [
   {
@@ -46,15 +47,17 @@ const PRO_CROSSHAIRS = [
 ];
 
 export default function CrosshairsPage() {
+  const { t } = useLanguage();
+
   return (
     <section className="space-y-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold uppercase tracking-[0.15em] text-[#ece8e1] sm:text-4xl">
-            Pro &amp; Community Crosshairs
+            {t.headers.crosshairs}
           </h1>
           <p className="mt-2 text-sm uppercase tracking-widest text-[#ece8e1]/70">
-            Copy pro codes in one click — or submit your own setup.
+            {t.crosshairs.subtitle}
           </p>
         </div>
         <Button
@@ -64,7 +67,7 @@ export default function CrosshairsPage() {
           className="gap-2 bg-transparent text-[11px] text-[#ff4655] hover:bg-[#ff4655] hover:text-[#0f1923]"
         >
           <ExternalLink className="h-4 w-4" />
-          <span>SUBMIT YOUR OWN CROSSHAIR</span>
+          <span>{t.buttons.submit}</span>
         </Button>
       </div>
 

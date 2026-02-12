@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useLanguage } from "@/lib/lang-context";
 
 type SkinsFiltersProps = {
   weaponOptions: string[];
@@ -21,6 +22,7 @@ export function SkinsFilters({
 }: SkinsFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useLanguage();
 
   function updateFilter(key: "weapon" | "tier" | "sort", value: string) {
     const next = new URLSearchParams(searchParams);
@@ -44,13 +46,13 @@ export function SkinsFilters({
         ) : null}
         <label className="flex items-center gap-2">
           <span className="text-[11px] font-bold uppercase tracking-widest text-[#ece8e1]/70">
-            Search
+            {t.common.search}
           </span>
           <input
             type="search"
             name="q"
             defaultValue={currentQ}
-            placeholder="Skin or weapon name..."
+            placeholder={t.filters.search}
             className="w-40 border border-[#ece8e1]/30 bg-[#0f1923] px-2 py-1.5 text-xs font-medium uppercase tracking-wider text-[#ece8e1] placeholder:text-[#ece8e1]/40 focus:border-[#ff4655] focus:outline-none sm:w-52"
           />
         </label>
@@ -58,19 +60,19 @@ export function SkinsFilters({
           type="submit"
           className="border-2 border-[#ff4655] bg-[#ff4655] px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-[#0f1923] transition hover:bg-[#ece8e1]"
         >
-          Apply
+          {t.common.submit}
         </button>
       </form>
       <label className="flex items-center gap-2">
         <span className="text-[11px] font-bold uppercase tracking-widest text-[#ece8e1]/70">
-          Weapon
+          {t.filters.allWeapons}
         </span>
         <select
           value={currentWeapon}
           onChange={(e) => updateFilter("weapon", e.target.value)}
           className="border border-[#ece8e1]/30 bg-[#0f1923] px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ece8e1] focus:border-[#ff4655] focus:outline-none"
         >
-          <option value="">All</option>
+          <option value="">{t.filters.allWeapons}</option>
           {weaponOptions.map((name) => (
             <option key={name} value={name}>
               {name}
@@ -80,7 +82,7 @@ export function SkinsFilters({
       </label>
       <label className="flex items-center gap-2">
         <span className="text-[11px] font-bold uppercase tracking-widest text-[#ece8e1]/70">
-          Sort
+          {t.filters.sort}
         </span>
         <select
           value={currentSort || "name"}
@@ -88,8 +90,8 @@ export function SkinsFilters({
           className="border border-[#ece8e1]/30 bg-[#0f1923] px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ece8e1] focus:border-[#ff4655] focus:outline-none"
         >
           <option value="name">Name (A-Z)</option>
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
+          <option value="newest">{t.filters.newest}</option>
+          <option value="oldest">{t.filters.oldest}</option>
         </select>
       </label>
       <label className="flex items-center gap-2">

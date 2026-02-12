@@ -8,12 +8,7 @@ import {
 import { TacticalCard } from "@/components/TacticalCard";
 import { SkinsFilters } from "./SkinsFilters";
 import { SkinsGridClient } from "./SkinsGridClient";
-
-export const metadata: Metadata = {
-  title: "Valorant Skins | Weapon Skins by Type & Tier",
-  description:
-    "Browse Valorant weapon skins. Filter by weapon type (Vandal, Phantom, Knife) and tier (Select, Deluxe, Premium).",
-};
+import { useLanguage } from "@/lib/lang-context";
 
 export const revalidate = 3600;
 
@@ -72,14 +67,17 @@ export default async function SkinsPage({ searchParams }: PageProps) {
     // keep API order as-is (assumed chronological)
   }
 
+  const { t } = useLanguage();
+
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold uppercase tracking-[0.15em] text-[#ece8e1] sm:text-4xl">
-            Skins
+            {t.headers.skins}
           </h1>
           <p className="mt-2 text-sm uppercase tracking-widest text-[#ece8e1]/70">
+            {/* Simple static description; can be translated later via dictionary if desired */}
             Filter by weapon type &amp; tier
           </p>
         </div>

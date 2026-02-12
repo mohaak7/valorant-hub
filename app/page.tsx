@@ -1,24 +1,22 @@
 import Link from "next/link";
 import { fetchWeapons } from "@/lib/valorant-api";
 import { TacticalCard } from "@/components/TacticalCard";
+import { HomeHero } from "@/components/HomeHero";
 
 export const revalidate = 3600;
 
 export default async function Home() {
   const weapons = await fetchWeapons();
-  const vandal = weapons.find((w) => w.displayName === "Vandal");
-  const topSkins = vandal?.skins?.filter((s) => !s.displayName?.match(/Level \d+/)).slice(0, 8) ?? [];
+  const vandal =
+    weapons.find((w) => w.displayName === "Vandal") ?? weapons[0];
+  const topSkins =
+    vandal?.skins
+      ?.filter((s) => !s.displayName?.match(/Level \d+/))
+      .slice(0, 8) ?? [];
 
   return (
     <section className="space-y-8">
-      <div className="mx-auto max-w-3xl text-center">
-        <h1 className="glitch-hover text-balance text-3xl font-bold uppercase tracking-[0.12em] text-[#ece8e1] sm:text-4xl md:text-5xl">
-          <span className="glitch-text">Find any Valorant skin price</span>
-        </h1>
-        <p className="mt-4 text-sm uppercase tracking-widest text-[#ece8e1]/70 sm:text-base">
-          Skins database · Agents · Bundles · Crosshairs
-        </p>
-      </div>
+      <HomeHero />
 
       <div className="mx-auto max-w-2xl">
         <form
@@ -46,7 +44,7 @@ export default async function Home() {
 
       <section className="space-y-4">
         <h2 className="text-xs font-bold uppercase tracking-[0.25em] text-[#ece8e1]/70">
-          Top tracked — Vandal
+          Top tracked — {vandal?.displayName ?? "Vandal"}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {topSkins.map((skin) => (
