@@ -8,6 +8,7 @@ type SkinsFiltersProps = {
   currentWeapon: string;
   currentTier: string;
   currentQ: string;
+  currentSort: string;
 };
 
 export function SkinsFilters({
@@ -16,11 +17,12 @@ export function SkinsFilters({
   currentWeapon,
   currentTier,
   currentQ,
+  currentSort,
 }: SkinsFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  function updateFilter(key: "weapon" | "tier", value: string) {
+  function updateFilter(key: "weapon" | "tier" | "sort", value: string) {
     const next = new URLSearchParams(searchParams);
     if (value) next.set(key, value);
     else next.delete(key);
@@ -74,6 +76,20 @@ export function SkinsFilters({
               {name}
             </option>
           ))}
+        </select>
+      </label>
+      <label className="flex items-center gap-2">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-[#ece8e1]/70">
+          Sort
+        </span>
+        <select
+          value={currentSort || "name"}
+          onChange={(e) => updateFilter("sort", e.target.value)}
+          className="border border-[#ece8e1]/30 bg-[#0f1923] px-2 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ece8e1] focus:border-[#ff4655] focus:outline-none"
+        >
+          <option value="name">Name (A-Z)</option>
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
         </select>
       </label>
       <label className="flex items-center gap-2">

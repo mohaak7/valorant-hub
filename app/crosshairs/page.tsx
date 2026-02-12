@@ -1,106 +1,90 @@
-import type { Metadata } from "next";
+"use client";
+
 import { TacticalCard } from "@/components/TacticalCard";
 import { CrosshairPreview } from "@/components/CrosshairPreview";
 import { CrosshairCopyButton } from "./CrosshairCopyButton";
+import { Button } from "@/components/ui/button";
+import { ExternalLink } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Pro Crosshairs | Valorant Crosshair Codes",
-  description:
-    "5–6 popular pro-player Valorant crosshair codes with preview. Copy and paste into your game.",
-};
-
-const CROSSHAIRS = [
+const PRO_CROSSHAIRS = [
   {
-    id: "1",
-    player: "TenZ",
-    description: "Dot with thin cross, minimal",
-    code: "0;P;c;5;o;0;d;1;z;3;0b;0;1b;0",
-    dot: true,
-    lineLength: 6,
-    thickness: 1,
-    gap: 2,
+    name: "TenZ",
+    team: "Sentinels",
+    code: "0;s;1;P;c;5;h;0;m;1;0l;4;0o;2;0a;1;0f;0;1b;0;S;c;5;o;1",
+    preview: { dot: true, lineLength: 6, thickness: 2, gap: 2 },
   },
   {
-    id: "2",
-    player: "yay",
-    description: "Small dot, no lines",
+    name: "yay",
+    team: "Bleed",
     code: "0;P;c;1;o;0;d;1;z;3;0b;0;1b;0",
-    dot: true,
-    lineLength: 0,
-    thickness: 1,
-    gap: 0,
+    preview: { dot: true, lineLength: 0, thickness: 2, gap: 0 },
   },
   {
-    id: "3",
-    player: "Demon1",
-    description: "T-style with dot",
-    code: "0;P;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0",
-    dot: true,
-    lineLength: 8,
-    thickness: 2,
-    gap: 1,
-  },
-  {
-    id: "4",
-    player: "Aspas",
-    description: "Classic cross, small gap",
+    name: "aspas",
+    team: "Leviatán",
     code: "0;P;c;5;o;0.5;d;1;z;3;0b;0;1b;0",
-    dot: true,
-    lineLength: 5,
-    thickness: 1,
-    gap: 3,
+    preview: { dot: true, lineLength: 5, thickness: 1, gap: 3 },
   },
   {
-    id: "5",
-    player: "Chronicle",
-    description: "Thin lines, dot",
-    code: "0;P;c;5;o;0;d;1;z;2;0b;0;1b;0",
-    dot: true,
-    lineLength: 7,
-    thickness: 1,
-    gap: 2,
+    name: "Demon1",
+    team: "NRG",
+    code: "0;P;h;0;f;0;0l;4;0o;2;0a;1;0f;0;1b;0",
+    preview: { dot: true, lineLength: 8, thickness: 2, gap: 1 },
   },
   {
-    id: "6",
-    player: "cNed",
-    description: "Compact cross, dot",
+    name: "cNed",
+    team: "NAVI",
     code: "0;P;c;4;o;0;d;1;z;2;0b;0;1b;0",
-    dot: true,
-    lineLength: 5,
-    thickness: 1,
-    gap: 2,
+    preview: { dot: true, lineLength: 5, thickness: 1, gap: 2 },
+  },
+  {
+    name: "Chronicle",
+    team: "Fnatic",
+    code: "0;P;c;5;o;0;d;1;z;2;0b;0;1b;0",
+    preview: { dot: true, lineLength: 7, thickness: 1, gap: 2 },
   },
 ];
 
 export default function CrosshairsPage() {
   return (
     <section className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold uppercase tracking-[0.15em] text-[#ece8e1] sm:text-4xl">
-          Crosshairs
-        </h1>
-        <p className="mt-2 text-sm uppercase tracking-widest text-[#ece8e1]/70">
-          Pro-player crosshair codes — copy &amp; paste
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold uppercase tracking-[0.15em] text-[#ece8e1] sm:text-4xl">
+            Pro &amp; Community Crosshairs
+          </h1>
+          <p className="mt-2 text-sm uppercase tracking-widest text-[#ece8e1]/70">
+            Copy pro codes in one click — or submit your own setup.
+          </p>
+        </div>
+        <Button
+          onClick={() =>
+            window.open("https://forms.gle/TXTJcJeNyVpHMNhw5", "_blank")
+          }
+          className="gap-2 bg-transparent text-[11px] text-[#ff4655] hover:bg-[#ff4655] hover:text-[#0f1923]"
+        >
+          <ExternalLink className="h-4 w-4" />
+          <span>SUBMIT YOUR OWN CROSSHAIR</span>
+        </Button>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {CROSSHAIRS.map((ch) => (
-          <TacticalCard key={ch.id} glitch>
+        {PRO_CROSSHAIRS.map((ch) => (
+          <TacticalCard key={ch.name} glitch>
             <div className="flex flex-col items-center gap-4">
               <CrosshairPreview
-                dot={ch.dot}
-                lineLength={ch.lineLength}
-                thickness={ch.thickness}
-                gap={ch.gap}
+                dot={ch.preview.dot}
+                lineLength={ch.preview.lineLength}
+                thickness={ch.preview.thickness}
+                gap={ch.preview.gap}
                 className="border border-[#ece8e1]/20"
               />
               <div className="w-full text-center">
                 <p className="text-xs font-bold uppercase tracking-widest text-[#ff4655]">
-                  {ch.player}
+                  {ch.name}
                 </p>
-                <p className="mt-1 text-[11px] text-[#ece8e1]/70">
-                  {ch.description}
+                <p className="mt-1 text-[11px] uppercase tracking-widest text-[#ece8e1]/70">
+                  {ch.team}
                 </p>
               </div>
               <div className="flex w-full items-center gap-2">

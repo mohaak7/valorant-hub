@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Copy, Check } from "lucide-react";
 
 export function CrosshairCopyButton({ code }: { code: string }) {
   const [copied, setCopied] = useState(false);
@@ -12,12 +14,24 @@ export function CrosshairCopyButton({ code }: { code: string }) {
   }
 
   return (
-    <button
-      type="button"
-      onClick={copy}
-      className="shrink-0 border-2 border-[#ff4655] bg-[#0f1923] px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#ff4655] transition hover:bg-[#ff4655] hover:text-[#0f1923]"
-    >
-      {copied ? "Copied" : "Copy"}
-    </button>
+    <>
+      <Button
+        type="button"
+        onClick={copy}
+        className="shrink-0 gap-1 border-[#ff4655] bg-[#0f1923] text-[10px] text-[#ff4655] hover:bg-[#ff4655] hover:text-[#0f1923]"
+      >
+        {copied ? (
+          <Check className="h-3 w-3" />
+        ) : (
+          <Copy className="h-3 w-3" />
+        )}
+        <span>{copied ? "Copied" : "Copy"}</span>
+      </Button>
+      {copied && (
+        <div className="fixed bottom-4 right-4 rounded-md border border-[#ff4655] bg-[#0f1923]/95 px-3 py-2 text-[11px] font-bold uppercase tracking-widest text-[#ece8e1] shadow-lg">
+          Copied!
+        </div>
+      )}
+    </>
   );
 }
