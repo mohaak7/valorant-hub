@@ -36,6 +36,47 @@ export type ContentTier = {
   displayIcon: string;
 };
 
+/** Exact content tier UUID → VP price (Valorant standard pricing). */
+const TIER_UUID_TO_VP: Record<string, string> = {
+  "12683d76-48d7-2604-28fa-6e836fa18abc": "875 VP",   // Select
+  "0cebb8be-46d7-c12a-d306-e9907bfc5a25": "1275 VP",  // Deluxe
+  "60bca009-4182-7998-dee7-b8a2558dc369": "1775 VP",   // Premium
+  "411e4a55-4e59-7757-41f0-86a53f101bb5": "2475 VP",  // Ultra
+  "e046854e-406c-37f4-6607-19a9ba8426fc": "Varies",   // Exclusive
+};
+
+/**
+ * Returns the VP price label for a skin based on its content tier UUID.
+ * Use this for display when you only have the UUID (e.g. in SkinCard).
+ */
+export function getSkinPriceByTierUuid(
+  tierUuid: string | null | undefined
+): string {
+  if (tierUuid == null || tierUuid === "") return "N/A";
+  return TIER_UUID_TO_VP[tierUuid] ?? "N/A";
+}
+
+/** Estimated VP by tier (Select = Blue, Deluxe = Green, etc.). Exclusive has no fixed price. */
+const TIER_VP: Record<string, string> = {
+  Select: "875",
+  Deluxe: "1275",
+  Premium: "1775",
+  Ultra: "2475",
+  Exclusive: "Exclusive",
+};
+
+/** Returns estimated VP label and tier icon for a skin's content tier. */
+export function getSkinPrice(tier: ContentTier | null | undefined): {
+  vpLabel: string;
+  tierIcon: string | null;
+} {
+  if (!tier) return { vpLabel: "N/A", tierIcon: null };
+  return {
+    vpLabel: getSkinPriceByTierUuid(tier.uuid),
+    tierIcon: tier.displayIcon ?? null,
+  };
+}
+
 export type WeaponSkinChroma = {
   uuid: string;
   displayIcon: string | null;
@@ -86,48 +127,81 @@ async function fetchApi<T>(path: string): Promise<T> {
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   const json: ApiResponse<T> = await res.json();
+  if (json?.data == null) throw new Error("API returned null data");
   return json.data;
 }
 
 export async function fetchAgents(): Promise<Agent[]> {
-  const data = await fetchApi<Agent[]>("/agents?isPlayableCharacter=true");
-  return (data as (Agent & { isPlayableCharacter?: boolean })[]).filter(
-    (a) => a.isPlayableCharacter !== false
-  );
+  try {
+    const data = await fetchApi<Agent[]>("/agents?isPlayableCharacter=true");
+    const list = Array.isArray(data) ? data : [];
+    return (list as (Agent & { isPlayableCharacter?: boolean })[]).filter(
+      (a) => a.isPlayableCharacter !== false
+    );
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchWeapons(): Promise<Weapon[]> {
-  return fetchApi<Weapon[]>("/weapons");
+  try {
+    const data = await fetchApi<Weapon[]>("/weapons");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchBundles(): Promise<Bundle[]> {
-  return fetchApi<Bundle[]>("/bundles");
+  try {
+    const data = await fetchApi<Bundle[]>("/bundles");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchContentTiers(): Promise<ContentTier[]> {
-  return fetchApi<ContentTier[]>("/contenttiers");
+  try {
+    const data = await fetchApi<ContentTier[]>("/contenttiers");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchThemes(): Promise<Theme[]> {
-  return fetchApi<Theme[]>("/themes");
+  try {
+    const data = await fetchApi<Theme[]>("/themes");
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }
 
 /** All skins flattened with weapon name for filtering */
 export async function fetchAllSkins(): Promise<SkinWithWeapon[]> {
-  const weapons = await fetchWeapons();
-  const skins: SkinWithWeapon[] = [];
-  for (const w of weapons) {
-    for (const s of w.skins) {
-      if (!s.displayName?.match(/Level \d+/)) {
-        skins.push({
-          ...s,
-          weaponName: w.displayName,
-          weaponUuid: w.uuid,
-        });
+  try {
+    const weapons = await fetchWeapons();
+    if (!Array.isArray(weapons)) return [];
+    const skins: SkinWithWeapon[] = [];
+    for (const w of weapons) {
+      const wSkins = w?.skins;
+      if (!Array.isArray(wSkins)) continue;
+      for (const s of wSkins) {
+        if (!s.displayName?.match(/Level \d+/)) {
+          skins.push({
+            ...s,
+            weaponName: w.displayName ?? "",
+            weaponUuid: w.uuid ?? "",
+          });
+        }
       }
     }
+    return skins;
+  } catch {
+    return [];
   }
-  return skins;
 }
 
 /** Agents for static generation */
@@ -197,21 +271,25 @@ export type WeaponForRoulette = {
 
 /** Weapons with skins filtered to Select / Deluxe / Premium / Ultra / Exclusive only. Sorted for display. */
 export async function fetchWeaponsForRoulette(): Promise<WeaponForRoulette[]> {
-  const [weapons, tiers] = await Promise.all([
-    fetchWeapons(),
-    fetchContentTiers(),
-  ]);
-  const allowedTierUuids = new Set(
-    tiers
-      .filter((t) => ROULETTE_TIER_DEV_NAMES.includes(t.devName))
-      .map((t) => t.uuid)
-  );
-  const tierMap = new Map(tiers.map((t) => [t.uuid, t.displayName]));
+  try {
+    const [weapons, tiers] = await Promise.all([
+      fetchWeapons(),
+      fetchContentTiers(),
+    ]);
+    if (!Array.isArray(weapons) || !Array.isArray(tiers)) return [];
+    const allowedTierUuids = new Set(
+      tiers
+        .filter((t) => t && ROULETTE_TIER_DEV_NAMES.includes(t.devName))
+        .map((t) => t.uuid)
+    );
+    const tierMap = new Map(tiers.map((t) => [t.uuid, t.displayName]));
 
-  const result: WeaponForRoulette[] = [];
+    const result: WeaponForRoulette[] = [];
 
-  for (const w of weapons) {
-    const skins = w.skins
+    for (const w of weapons) {
+      const wSkins = w?.skins;
+      if (!Array.isArray(wSkins)) continue;
+      const skins = wSkins
       .filter((s) => !s.displayName?.match(/Level \d+/))
       .filter((s) => allowedTierUuids.has(s.contentTierUuid))
       .map((s) => ({
@@ -228,37 +306,45 @@ export async function fetchWeaponsForRoulette(): Promise<WeaponForRoulette[]> {
 
     if (skins.length === 0) continue;
 
-    result.push({
-      uuid: w.uuid,
-      displayName: w.displayName,
-      displayIcon: w.displayIcon,
-      category: w.category,
-      skins,
+      result.push({
+        uuid: w.uuid,
+        displayName: w.displayName,
+        displayIcon: w.displayIcon,
+        category: w.category,
+        skins,
+      });
+    }
+
+    result.sort((a, b) => {
+      const orderA = WEAPON_CATEGORY_ORDER[a.category] ?? 99;
+      const orderB = WEAPON_CATEGORY_ORDER[b.category] ?? 99;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.displayName.localeCompare(b.displayName);
     });
+
+    return result;
+  } catch {
+    return [];
   }
-
-  result.sort((a, b) => {
-    const orderA = WEAPON_CATEGORY_ORDER[a.category] ?? 99;
-    const orderB = WEAPON_CATEGORY_ORDER[b.category] ?? 99;
-    if (orderA !== orderB) return orderA - orderB;
-    return a.displayName.localeCompare(b.displayName);
-  });
-
-  return result;
 }
 
 /** Skins filtered to Deluxe, Premium, Ultra, and Exclusive tiers only (no Select). Legacy. */
 export async function fetchRouletteSkins(): Promise<SkinWithWeapon[]> {
-  const [tiers, allSkins] = await Promise.all([
-    fetchContentTiers(),
-    fetchAllSkins(),
-  ]);
-  const allowedUuids = new Set(
-    tiers
-      .filter((t) =>
-        ["Deluxe", "Premium", "Ultra", "Exclusive"].includes(t.devName)
-      )
-      .map((t) => t.uuid)
-  );
-  return allSkins.filter((s) => allowedUuids.has(s.contentTierUuid));
+  try {
+    const [tiers, allSkins] = await Promise.all([
+      fetchContentTiers(),
+      fetchAllSkins(),
+    ]);
+    if (!Array.isArray(tiers) || !Array.isArray(allSkins)) return [];
+    const allowedUuids = new Set(
+      tiers
+        .filter((t) =>
+          ["Deluxe", "Premium", "Ultra", "Exclusive"].includes(t.devName)
+        )
+        .map((t) => t.uuid)
+    );
+    return allSkins.filter((s) => allowedUuids.has(s.contentTierUuid));
+  } catch {
+    return [];
+  }
 }

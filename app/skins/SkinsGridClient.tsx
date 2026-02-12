@@ -8,6 +8,9 @@ type SkinForClient = {
   weaponName: string;
   imageUrl: string | null;
   tierName?: string | null;
+  tierIcon?: string | null;
+  contentTierUuid?: string | null;
+  vpLabel?: string;
 };
 
 type SkinsGridClientProps = {
@@ -17,7 +20,7 @@ type SkinsGridClientProps = {
 export function SkinsGridClient({ skins }: SkinsGridClientProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      {skins.map((skin) => (
+      {(skins ?? []).map((skin) => (
         <SkinCard
           key={skin.uuid}
           uuid={skin.uuid}
@@ -25,6 +28,9 @@ export function SkinsGridClient({ skins }: SkinsGridClientProps) {
           weaponName={skin.weaponName}
           imageUrl={skin.imageUrl}
           tierName={skin.tierName ?? undefined}
+          tierIcon={skin.tierIcon ?? undefined}
+          contentTierUuid={skin.contentTierUuid ?? undefined}
+          vpLabel={skin.vpLabel}
         />
       ))}
     </div>

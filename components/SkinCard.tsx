@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { TacticalCard } from "@/components/TacticalCard";
@@ -11,62 +10,18 @@ type SkinCardProps = {
   weaponName: string;
   imageUrl: string | null;
   tierName?: string | null;
+  tierIcon?: string | null;
+  contentTierUuid?: string | null;
+  vpLabel?: string;
 };
 
-const INVENTORY_KEY = "my-inventory";
-const LEGACY_KEY = "ownedSkins";
-
-function readIsOwned(uuid: string): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    const currentRaw = window.localStorage.getItem(INVENTORY_KEY);
-    const legacyRaw = window.localStorage.getItem(LEGACY_KEY);
-
-    const ids = new Set<string>();
-
-    if (currentRaw) {
-      const parsed = JSON.parse(currentRaw);
-      if (Array.isArray(parsed)) {
-        parsed.forEach((id) => {
-          if (typeof id === "string") ids.add(id);
-        });
-      }
-    }
-
-    if (legacyRaw) {
-      const parsedLegacy = JSON.parse(legacyRaw);
-      if (Array.isArray(parsedLegacy)) {
-        parsedLegacy.forEach((id) => {
-          if (typeof id === "string") ids.add(id);
-        });
-      }
-    }
-
-    return ids.has(uuid);
-  } catch {
-    return false;
-  }
-}
-
-function writeOwned(uuid: string, nextOwned: boolean) {
-  if (typeof window === "undefined") return;
-  try {
-    const raw = window.localStorage.getItem(INVENTORY_KEY);
-    let list: string[] = [];
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        list = parsed.filter((id): id is string => typeof id === "string");
-      }
-    }
-    const set = new Set(list);
-    if (nextOwned) set.add(uuid);
-    else set.delete(uuid);
-    window.localStorage.setItem(INVENTORY_KEY, JSON.stringify(Array.from(set)));
-  } catch {
-    // ignore
-  }
-}
+const TIER_PRICES: Record<string, string> = {
+  "12683d76-48d7-2604-28fa-6e836fa18abc": "875",    // Select (Blue)
+  "0cebb8be-46d7-c12a-d306-e9907bfc5a25": "1275",   // Deluxe (Green)
+  "60bca009-4182-7998-dee7-b8a2558dc369": "1775",   // Premium (Pink)
+  "411e4a55-4e59-7757-41f0-86a53f101bb5": "2475",   // Ultra (Yellow)
+  "e046854e-406c-37f4-6607-19a9ba8426fc": "Excl.",  // Exclusive (Orange)
+};
 
 export function SkinCard({
   uuid,
@@ -74,47 +29,16 @@ export function SkinCard({
   weaponName,
   imageUrl,
   tierName,
+  contentTierUuid,
+  vpLabel,
 }: SkinCardProps) {
-  const [isOwned, setIsOwned] = useState(false);
-
-  useEffect(() => {
-    setIsOwned(readIsOwned(uuid));
-  }, [uuid]);
-
-  function toggle(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsOwned((prev) => {
-      const next = !prev;
-      writeOwned(uuid, next);
-      return next;
-    });
-  }
+  const tierUuid = contentTierUuid?.toLowerCase();
+  const price = tierUuid ? TIER_PRICES[tierUuid] : null;
 
   return (
     <Link href={`/skins/${uuid}`}>
       <TacticalCard className="h-full" glitch>
         <div className="relative flex flex-col items-center gap-2">
-          <button
-            type="button"
-            onClick={toggle}
-            aria-label={
-              isOwned ? "Remove from my inventory" : "Add to my inventory"
-            }
-            className={`absolute right-2 top-2 flex items-center justify-center rounded-full border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-widest transition ${
-              isOwned
-                ? "border-[#ff4655] bg-[#ff4655]/20 text-[#ff4655]"
-                : "border-[#ece8e1]/30 bg-[#0f1923]/80 text-[#ece8e1]/70 hover:border-[#ff4655] hover:text-[#ff4655]"
-            }`}
-          >
-            <span
-              className={`text-[12px] leading-none ${
-                isOwned ? "text-[#ff4655]" : "text-[#ece8e1]/80"
-              }`}
-            >
-              {isOwned ? "♥" : "♡"}
-            </span>
-          </button>
           <div className="relative aspect-[2/1] w-full border border-[#ece8e1]/20 bg-[#0f1923]">
             {imageUrl && (
               <Image
@@ -124,6 +48,15 @@ export function SkinCard({
                 sizes="(max-width: 640px) 50vw, 20vw"
                 className="object-contain p-2"
               />
+            )}
+            {price && (
+              <div
+                className="absolute top-2 right-2 z-10 flex items-center gap-1 rounded border border-white/10 bg-black/80 px-2 py-1 text-xs font-bold text-white shadow-lg backdrop-blur-sm"
+                aria-label={`Price: ${price} VP`}
+              >
+                <span className="text-yellow-400">VP</span>
+                {price}
+              </div>
             )}
           </div>
           <p className="w-full truncate text-center text-xs font-bold uppercase tracking-wider text-[#ece8e1]">
@@ -140,4 +73,3 @@ export function SkinCard({
     </Link>
   );
 }
-
